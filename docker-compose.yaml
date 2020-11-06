@@ -1,0 +1,35 @@
+version: "3.6"
+services:
+  app:
+    image: wigo_deggan:or.0.14
+    restart: unless-stopped
+    container_name: wigo_app
+    environment: 
+      DB_HOST: db
+      DB_DATABASE: wigo_db
+      DB_USERNAME: root
+      DB_PASSWORD: adminlocal
+    # Make sure what port that application expose
+    ports: 
+      - 9777:9898
+    networks: 
+      - wigo_net
+  db:
+    image: mysql:5.7.22
+    container_name: db_wigo
+    restart: unless-stopped
+    tty: true
+    environment:
+      MYSQL_DATABASE: wigo_db
+      MYSQL_ROOT_PASSWORD: adminlocal
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    volumes:
+      - wigo_vol_db:/var/lib/mysql/
+    networks:
+      - wigo_net
+networks:
+  wigo_net:
+    driver: bridge
+volumes:
+  wigo_vol_db:
